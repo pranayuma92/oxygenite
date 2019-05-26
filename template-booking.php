@@ -40,7 +40,7 @@ get_header();
 							<div class="col-sm-12 form-group contact-forms">
 							  <input type="text" name="bookObject" class="form-control" placeholder="Object" value="<?php echo $post_object->post_title; ?>" disabled> 
 							</div>
-							<div class="col-sm-12 form-group contact-forms">
+							<div class="col-sm-12 form-group contact-forms" style="display: none">
 							  <input type="text" name="bookPrice" class="form-control" placeholder="Price" value="Rp <?php echo number_format($price,0,'.','.'); ?>" disabled> 
 							</div>
 							<div class="col-md-12 form-group contact-forms">
@@ -56,9 +56,9 @@ get_header();
 						<div class="image-tour position-relative">
 							<img src="<?php echo get_the_post_thumbnail_url($post_id, 'full') ?>" alt="" class="img-fluid" />
 							<?php if($post_meta[0]['p_sale_price'] != null) : ?>
-							<p><span class="fa fa-tags"></span> <span>Rp <?php echo number_format($post_meta[0]['p_sale_price'],0,'.','.'); ?> <del>Rp <?php echo number_format($post_meta[0]['p_reg_price'],0,'.','.'); ?></del></span></p>
+							<p><span class="fa fa-tags"></span> <span>Start from Rp <?php echo number_format($post_meta[0]['p_sale_price'],0,'.','.'); ?> <del>Rp <?php echo number_format($post_meta[0]['p_reg_price'],0,'.','.'); ?></del></span></p>
 							<?php else :?>
-							<p><span class="fa fa-tags"></span> <span>Rp <?php echo number_format($post_meta[0]['p_reg_price'],0,'.','.'); ?></span></p>
+							<p><span class="fa fa-tags"></span> <span>Start from Rp <?php echo number_format($post_meta[0]['p_reg_price'],0,'.','.'); ?></span></p>
 						<?php endif;?>
 						</div>
 						

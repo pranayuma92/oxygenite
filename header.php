@@ -8,7 +8,14 @@
  *
  * @package Oxygen
  */
+$nav = '';
+$control = '';
 
+$counts = wp_count_posts('simple_slider');
+for($i = 0; $i < $counts->publish; $i++){
+	$nav .= '<input type="radio" name="slides" id="slides_'.($i+1).'" />';
+	$control .= '<label for="slides_'.($i+1).'"></label>';
+}
 ?>
 <!doctype html>
 <html <?php language_attributes(); ?>>
@@ -52,11 +59,7 @@
 	<?php if(is_front_page()): ?>
 	<section class="banner_w3lspvt" id="home">
 		<div class="csslider infinity" id="slider1">
-			<?php $counts = wp_count_posts('simple_slider');
-			for($i = 0; $i < $counts->publish; $i++){
-				echo '<input type="radio" name="slides" id="slides_'.($i+1).'" />';
-			}
-			?>
+			<?php echo $nav; ?>
 			<ul>
 				<?php 
 				$sliders = new WP_Query(array('post_type'   => 'simple_slider')); 
@@ -79,11 +82,7 @@
 				<?php endwhile;?>
 			</ul>
 			<div class="arrows">
-				<?php $counts = wp_count_posts('simple_slider');
-				for($i = 0; $i < $counts->publish; $i++){
-					echo '<label for="slides_'.($i+1).'"></label>';
-				}
-				?>
+				<?php echo $control; ?>
 			</div>
 		</div>
 	</section>

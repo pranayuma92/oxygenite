@@ -20,6 +20,7 @@ class ExtendedFunction {
 	}
 
 	public function oxygen_enqueue_scripts(){
+		wp_enqueue_script( 'oxygen-bootstrap-js', 'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js', array('jquery'), '', false);
 		wp_enqueue_style( 'oxygen-bootstrap', get_template_directory_uri() . '/assets/css/bootstrap.css' );
 		wp_enqueue_style( 'oxygen-custom', get_template_directory_uri() . '/assets/css/style.css' );
 		wp_enqueue_style( 'oxygen-fa', get_template_directory_uri() . '/assets/css/font-awesome.min.css' );
@@ -53,15 +54,21 @@ class ExtendedFunction {
 	}
 
 	public function page_metaboxes() {
-	    $mb_path  = get_template_directory() . '/inc/page-metabox.php';
-	    $mb = new VP_Metabox(array(
-	        'id'          => 'page_mb',
-	        'types'       => array('page'),
-	        'title'       => __('Page Option', 'oxygen'),
-	        'priority'    => 'high',
-	        'is_dev_mode' => false,
-	        'template'    => $mb_path
-	    ));
+		$post_id = $_GET['post'];
+
+		$pageTemplate = get_post_meta($post_id, '_wp_page_template', true);
+
+		if($pageTemplate == 'product-overview.php'){
+		    $mb_path  = get_template_directory() . '/inc/page-metabox.php';
+		    $mb = new VP_Metabox(array(
+		        'id'          => 'page_mb',
+		        'types'       => array('page'),
+		        'title'       => __('Page Option', 'oxygen'),
+		        'priority'    => 'high',
+		        'is_dev_mode' => false,
+		        'template'    => $mb_path
+		    ));
+		}
 	}
 
 	public function init_options() {
@@ -144,8 +151,8 @@ class ExtendedFunction {
 
 	public function overview_product_list(){
 		if(vp_option('b_option.p_mode') == null) {
-			$count = 1;
-			$order = 'rand';
+			$count = -1;
+			$order = 'date';
 		} else {
 			$count = vp_option('b_option.p_count');
 			$order = 'date';
@@ -159,15 +166,21 @@ class ExtendedFunction {
  		);
 
  		$list = new WP_Query($args); 
+ 		ob_start(); ?>
+ 				<div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+	  				<div class="carousel-inner">
+ 			<?php
  			while($list->have_posts()) : $list->the_post();
  				if(vp_option('b_option.p_mode') == null) : ?>
-		 			<div class="col-lg-6 about-left">
-						<h3 class="mt-lg-3"><?php the_title(); ?></h3>
-						<p class="mt-4"><?php the_excerpt(); ?></p><br>
-						<button class="btn sent-butnn" onclick="window.location.href='<?php echo home_url('/order/id/') . get_the_ID()?>'">Detail</button>
-					</div>
-					<div class="col-lg-6 about-right text-lg-right mt-lg-0 mt-5">
-						<img src="<?php echo get_the_post_thumbnail_url()?>" alt="" class="img-fluid abt-image" />
+ 					<div class="carousel-item">
+			 			<div class="col-lg-6 about-left">
+							<h3 class="mt-lg-3"><?php the_title(); ?></h3>
+							<p class="mt-4"><?php the_excerpt(); ?></p><br>
+							<button class="btn sent-butnn" onclick="window.location.href='<?php echo home_url('/order/id/') . get_the_ID()?>'">Detail</button>
+						</div>
+						<div class="col-lg-6 about-right text-lg-right mt-lg-0 mt-5">
+							<img src="<?php echo get_the_post_thumbnail_url()?>" alt="" class="img-fluid abt-image" />
+						</div>
 					</div>
 				<?php else: ?>
 					<div class="col-lg-3 col-sm-6" onclick="window.location.href='<?php the_permalink()?>'">
@@ -186,7 +199,24 @@ class ExtendedFunction {
 					</div>
  		<?php
  				endif;
- 			endwhile;
+ 			endwhile; ?>
+			    </div> 
+			  <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+			    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+			    <span class="sr-only">Previous</span>
+			  </a>
+			  <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+			    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+			    <span class="sr-only">Next</span>
+			  </a>
+			</div>
+			<script type="text/javascript">
+				jQuery(document).ready(function($){
+					$('.carousel-item:first').addClass('active');
+				});
+			</script>
+ 	<?php
+ 	return ob_get_clean();
 	}
 
 	public function custom_query_vars_filter($vars) {
